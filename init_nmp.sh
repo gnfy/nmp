@@ -18,7 +18,7 @@ mysql_group=mysql
 
 # 添加相关用户
 groupadd $web_group
-useradd -s /sbin/nologin -g $web_group $web_user
+#useradd -s /sbin/nologin -g $web_group $web_user
 
 groupadd $mysql_group
 useradd -s /sbin/nologin -g $mysql_group $mysql_user
@@ -40,7 +40,7 @@ ln -sf $lnmp_path/mysql/bin/mysql /usr/local/bin/mysql
 ln -sf $lnmp_path/mysql/bin/mysqladmin /usr/local/bin/mysqladmin
 
 # lua库
-ln -sf $lnmp_path/lib/libluajit-5.1.so.2 /lib64/libluajit-5.1.so.2
+ln -sf $lnmp_path/lib/luajit/lib/libluajit-5.1.so.2 /lib64/libluajit-5.1.so.2
 
 # nginx日志分割
 cat > /etc/logrotate.d/nginx << EOF
