@@ -57,15 +57,16 @@ read -p "是否安装nginx(y/n, 默认$is_install_nginx)?:" is_val
 read -p "是否安装mysql(y/n, 默认$is_install_mysql)?:" is_val
 [ $is_val ] && is_install_mysql=$is_val
 
-read -p "是否安装git(y/n, 默认$is_install_git)?:" is_val
-[ $is_val ] && is_install_git=$is_val
-
 if [ $is_install_nginx = 'y' ]; then
     read -p "请指定web运行用户(默认$web_user):" new_user
     [ $new_user ] && web_user=$new_user
 
     read -p "请指定web运行用户组(默认$web_group):" new_group
     [ $new_group ] && web_group=$new_group
+    is_install_git='y'
+else
+    read -p "是否安装git(y/n, 默认$is_install_git)?:" is_val
+    [ $is_val ] && is_install_git=$is_val
 fi
 
 if [ $is_install_mysql = 'y' ]; then
@@ -132,7 +133,7 @@ export LUAJIT_LIB=${luajit_path}/lib
 export LUAJIT_INC=${luajit_path}/include/luajit-2.0
 fi
 
-# git安装
+# 安装git
 if [ $is_install_git = 'y' ]; then
 . ${CURDIR}/scripts/install_git.sh
 fi
