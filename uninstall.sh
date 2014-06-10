@@ -19,9 +19,9 @@ export PATH
 arg_num=$#
 arg=$@
 
-php=/usr/local/lnmp/php5.3:/etc/init.d/php-fpm:/usr/local/bin/php:/usr/local/bin/phpize
-nginx=/usr/local/lnmp/nginx:/etc/init.d/nginx:/etc/logrotate.d/nginx
-mysql=/usr/local/lnmp/mysql:/etc/init.d/mysqld:/usr/local/bin/mysql:/usr/local/bin/mysqladmin
+php=/etc/init.d/php-fpm:/usr/local/lnmp/php5.3:/usr/local/bin/php:/usr/local/bin/phpize
+nginx=/etc/init.d/nginx:/usr/local/lnmp/nginx:/etc/logrotate.d/nginx
+mysql=/etc/init.d/mysqld:/usr/local/lnmp/mysql:/usr/local/bin/mysql:/usr/local/bin/mysqladmin
 progrom_arr=(php nginx mysql)
 
 uninstall() {
@@ -55,7 +55,6 @@ uninstall() {
 }
 
 check_arg() {
-    arg_error=0
     if [ $arg_num -gt "0" ]; then
         if [ $arg_num -eq "1" ]; then
             if [ $arg = 'all' ]; then
@@ -85,13 +84,15 @@ check_arg() {
                 uninstall_progrom=${arg[*]}
             fi
         fi
+    else
+        uninstall_progrom=${progrom_arr[*]}
     fi
     if [  ${#uninstall_progrom[@]} -eq 0 ]; then
-        echo -e "\033[31m参数错误，标准参数 {all|php|nginx|mysql} \033[0m"
+        echo -e "\033[31m参数错误，标准参数 {all|php|nginx|mysql},其中all代表所有程序且不能和其它参数共存 \033[0m"
         kill -9 $$
         exit 1
     fi
-
+    
     # 卸载
     uninstall
 }

@@ -76,21 +76,8 @@ install_nginx() {
         mkdir -p $prefix_path/init
         /bin/cp /etc/init.d/nginx $prefix_path/init/ -f
 
-        if [ $CPU_num == 1 ];then
-            sed -i 's@^worker_processes.*@worker_processes 1;@' $prefix_path/conf/nginx.conf
-        elif [ $CPU_num == 2 ];then
-            sed -i 's@^worker_processes.*@worker_processes 2;\nworker_cpu_affinity 10 01;@' $prefix_path/conf/nginx.conf
-        elif [ $CPU_num == 3 ];then
-            sed -i 's@^worker_processes.*@worker_processes 3;\nworker_cpu_affinity 100 010 001;@' $prefix_path/conf/nginx.conf
-        elif [ $CPU_num == 4 ];then
-            sed -i 's@^worker_processes.*@worker_processes 4;\nworker_cpu_affinity 1000 0100 0010 0001;@' $prefix_path/conf/nginx.conf
-        elif [ $CPU_num == 6 ];then
-            sed -i 's@^worker_processes.*@worker_processes 6;\nworker_cpu_affinity 100000 010000 001000 000100 000010 000001;@' $prefix_path/conf/nginx.conf
-        elif [ $CPU_num == 8 ];then
-            sed -i 's@^worker_processes.*@worker_processes 8;\nworker_cpu_affinity 10000000 01000000 00100000 00010000 00001000 00000100 00000010 00000001;@' $prefix_path/conf/nginx.conf
-        else
-            echo Google worker_cpu_affinity
-        fi
+        # 优化nginx
+        . ${CURDIR}/scripts/optimize_nginx.sh
 
         # 分割日志
         cat > /etc/logrotate.d/nginx << EOF
@@ -123,7 +110,7 @@ EOF
         fi
 
         # 更新删除脚本
-        program_path=$prefix_path:/etc/init.d/nginx:/etc/logrotate.d/nginx
+        program_path=/etc/init.d/nginx:$prefix_path:/etc/logrotate.d/nginx
         program_name=nginx
         init_uninstall
         

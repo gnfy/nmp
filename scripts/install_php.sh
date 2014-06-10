@@ -56,18 +56,6 @@ install_php53() {
 
         /bin/cp php.ini-production ${ini_file}
 
-        sed -i "s/^memory_limit.*/memory_limit = ${Memory_limit}M/" $ini_file
-        sed -i 's/^post_max_size.*/post_max_size = 50M/g' $ini_file
-        sed -i 's/^upload_max_filesize.*/upload_max_filesize = 50M/g' $ini_file
-        sed -i 's/^;date.timezone.*/date.timezone = PRC/g' $ini_file
-        sed -i 's/^short_open_tag.*/short_open_tag = On/g' $ini_file
-        sed -i 's/^;cgi.fix_pathinfo=.*/cgi.fix_pathinfo=0/g' $ini_file
-        sed -i 's/^max_execution_time.*/max_execution_time = 300/g' $ini_file
-        sed -i 's/^;upload_tmp_dir.*/upload_tmp_dir = \/tmp/g' $ini_file
-        sed -i 's/^mysqlnd.collect_memory_statistics.*/mysqlnd.collect_memory_statistics = On/' $ini_file
-        sed -i 's/^disable_functions.*/disable_functions = passthru,exec,system,chroot,scandir,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server/g' $ini_file
-        [ -e /usr/sbin/sendmail ] && sed -i 's/^;sendmail_path.*/sendmail_path = \/usr\/sbin\/sendmail -t -i/' $ini_file
-
         file_url=http://downloads.zend.com/guard/5.5.0/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz
         download_file
         file_name=${file_url##*/}
@@ -116,32 +104,8 @@ request_slowlog_timeout = 0
 slowlog = log/slow.log
 EOF
 
-        if [ $Mem -le 3000 ];then
-            sed -i "s@^pm.max_children.*@pm.max_children = $(($Mem/2/20))@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.start_servers.*@pm.start_servers = $(($Mem/2/30))@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.min_spare_servers.*@pm.min_spare_servers = $(($Mem/2/40))@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = $(($Mem/2/20))@" $prefix_path/etc/php-fpm.conf
-        elif [ $Mem -gt 3000 -a $Mem -le 4500 ];then
-            sed -i "s@^pm.max_children.*@pm.max_children = 80@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.start_servers.*@pm.start_servers = 50@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.min_spare_servers.*@pm.min_spare_servers = 40@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = 80@" $prefix_path/etc/php-fpm.conf
-        elif [ $Mem -gt 4500 -a $Mem -le 6500 ];then
-            sed -i "s@^pm.max_children.*@pm.max_children = 90@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.start_servers.*@pm.start_servers = 60@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.min_spare_servers.*@pm.min_spare_servers = 50@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = 90@" $prefix_path/etc/php-fpm.conf
-        elif [ $Mem -gt 6500 -a $Mem -le 8500 ];then
-            sed -i "s@^pm.max_children.*@pm.max_children = 100@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.start_servers.*@pm.start_servers = 70@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.min_spare_servers.*@pm.min_spare_servers = 60@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = 100@" $prefix_path/etc/php-fpm.conf
-        elif [ $Mem -gt 8500 ];then
-            sed -i "s@^pm.max_children.*@pm.max_children = 120@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.start_servers.*@pm.start_servers = 80@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.min_spare_servers.*@pm.min_spare_servers = 70@" $prefix_path/etc/php-fpm.conf
-            sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = 120@" $prefix_path/etc/php-fpm.conf
-        fi
+        # 优化php
+        . ${CURDIR}/scripts/optimize_php.sh
 
         /bin/cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm -f
         chmod u+x /etc/init.d/php-fpm
@@ -157,7 +121,7 @@ EOF
         /etc/init.d/php-fpm start
 
         # 更新删除脚本
-        program_path=$prefix_path:/etc/init.d/php-fpm:/usr/local/bin/php:/usr/local/bin/phpize
+        program_path=/etc/init.d/php-fpm:$prefix_path:/usr/local/bin/php:/usr/local/bin/phpize
         program_name=php
         init_uninstall
 

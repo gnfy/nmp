@@ -134,31 +134,8 @@ read_buffer = 4M
 write_buffer = 4M
 EOF
 
-        if [ $Mem -gt 1500 -a $Mem -le 2500 ];then
-            sed -i 's@^thread_cache_size.*@thread_cache_size = 16@' $prefix_path/etc/my.cnf
-            sed -i 's@^query_cache_size.*@query_cache_size = 16M@' $prefix_path/etc/my.cnf
-            sed -i 's@^myisam_sort_buffer_size.*@myisam_sort_buffer_size = 16M@' $prefix_path/etc/my.cnf
-            sed -i 's@^key_buffer_size.*@key_buffer_size = 16M@' $prefix_path/etc/my.cnf
-            sed -i 's@^innodb_buffer_pool_size.*@innodb_buffer_pool_size = 128M@' $prefix_path/etc/my.cnf
-            sed -i 's@^tmp_table_size.*@tmp_table_size = 32M@' $prefix_path/etc/my.cnf
-            sed -i 's@^table_open_cache.*@table_open_cache = 256@' $prefix_path/etc/my.cnf
-        elif [ $Mem -gt 2500 -a $Mem -le 3500 ];then
-            sed -i 's@^thread_cache_size.*@thread_cache_size = 32@' $prefix_path/etc/my.cnf
-            sed -i 's@^query_cache_size.*@query_cache_size = 32M@' $prefix_path/etc/my.cnf
-            sed -i 's@^myisam_sort_buffer_size.*@myisam_sort_buffer_size = 32M@' $prefix_path/etc/my.cnf
-            sed -i 's@^key_buffer_size.*@key_buffer_size = 64M@' $prefix_path/etc/my.cnf
-            sed -i 's@^innodb_buffer_pool_size.*@innodb_buffer_pool_size = 512M@' $prefix_path/etc/my.cnf
-            sed -i 's@^tmp_table_size.*@tmp_table_size = 64M@' $prefix_path/etc/my.cnf
-            sed -i 's@^table_open_cache.*@table_open_cache = 512@' $prefix_path/etc/my.cnf
-        elif [ $Mem -gt 3500 ];then
-            sed -i 's@^thread_cache_size.*@thread_cache_size = 64@' $prefix_path/etc/my.cnf
-            sed -i 's@^query_cache_size.*@query_cache_size = 64M@' $prefix_path/etc/my.cnf
-            sed -i 's@^myisam_sort_buffer_size.*@myisam_sort_buffer_size = 64M@' $prefix_path/etc/my.cnf
-            sed -i 's@^key_buffer_size.*@key_buffer_size = 256M@' $prefix_path/etc/my.cnf
-            sed -i 's@^innodb_buffer_pool_size.*@innodb_buffer_pool_size = 1024M@' $prefix_path/etc/my.cnf
-            sed -i 's@^tmp_table_size.*@tmp_table_size = 128M@' $prefix_path/etc/my.cnf
-            sed -i 's@^table_open_cache.*@table_open_cache = 1024@' $prefix_path/etc/my.cnf
-        fi
+        # 优化mysql
+        . ${CURDIR}/scripts/optimize_mysql.sh
 
         # 初始化数据库
         $prefix_path/scripts/mysql_install_db --user=$mysql_user --basedir=$prefix_path --datadir=$mysql_data_path
@@ -191,7 +168,7 @@ EOF
         $prefix_path/bin/mysql -uroot -p$mysql_pwd -e "reset master;"
 
         # 更新删除脚本
-        program_path=$prefix_path:/etc/init.d/mysqld:/usr/local/bin/mysql:/usr/local/bin/mysqladmin
+        program_path=/etc/init.d/mysqld:$prefix_path:/usr/local/bin/mysql:/usr/local/bin/mysqladmin
         program_name=mysql
         init_uninstall
 
