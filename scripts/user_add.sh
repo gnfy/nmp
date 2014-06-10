@@ -30,5 +30,9 @@ user_add() {
     fi
 }
 
-user_add 2>&1 | tee -a $install_log
-user_add $mysql_user $mysql_group 2>&1 | tee -a $install_log
+if [ $is_install_nginx = 'y' ]; then
+    user_add 2>&1 | tee -a $install_log
+fi
+if [ $is_install_mysql = 'y' ]; then
+    user_add $mysql_user $mysql_group 2>&1 | tee -a $install_log
+fi

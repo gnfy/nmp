@@ -43,4 +43,4 @@ update_system() {
 
 }
 
-update_system
+update_system 2>&1 | tee -a $install_log
