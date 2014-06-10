@@ -45,8 +45,6 @@ install_nginx() {
             tar zxf $file_name
             cd $_src_path
         fi
-        #./configure --prefix=$prefix_path --user=$web_user --group=$web_group --with-http_stub_status_module --with-http_ssl_module --with-http_flv_module --with-http_gzip_static_module --with-pcre=$pcre_path/src --with-zlib=$zlib_path/src --with-openssl=$openssl_path/src --add-module=$mod_path/ngx_devel_kit --add-module=$mod_path/lua-nginx-module --add-module=$mod_path/memc-nginx-module --add-module=$mod_path/srcache-nginx-module --add-module=$mod_path/set-misc-nginx-module --add-module=$mod_path/echo-nginx-module --add-module=$mod_path/redis2-nginx-module --add-module=$mod_path/nginx-gridfs
-        #./configure --prefix=$prefix_path --user=$web_user --group=$web_group --with-http_stub_status_module --with-http_ssl_module --with-http_flv_module --with-http_gzip_static_module --with-cc-opt="-I${jemalloc_path}/include" --with-ld-opt="-L${jemalloc_path}/lib" --with-pcre=$pcre_src_path --with-zlib=$zlib_src_path --with-openssl=$openssl_src_path $add_mod
         ./configure --prefix=$prefix_path --user=$web_user --group=$web_group --with-http_stub_status_module --with-http_ssl_module --with-http_flv_module --with-http_gzip_static_module --with-pcre=$pcre_src_path --with-zlib=$zlib_src_path --with-openssl=$openssl_src_path $add_mod
 
         make 

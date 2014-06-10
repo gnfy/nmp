@@ -152,3 +152,6 @@ fi
 if [ $is_install_mysql = 'y' ]; then
 . ${CURDIR}/scripts/install_mysql.sh
 fi
+
+# 更新初始化脚本
+. ${CURDIR}/scripts/update_init.sh
