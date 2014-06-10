@@ -24,7 +24,7 @@ install_log=$lnmp_path/install.log
 
 # 添加相关用户
 groupadd $web_group
-#useradd -s /sbin/nologin -g $web_group $web_user
+useradd -s /sbin/nologin -g $web_group $web_user
 
 groupadd $mysql_group
 useradd -s /sbin/nologin -g $mysql_group $mysql_user
