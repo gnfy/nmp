@@ -199,8 +199,8 @@ install_lib() {
         #升级openssl修补heartbleed漏洞'
         mv /usr/bin/openssl /usr/bin/openssl.old
         mv /usr/include/openssl /usr/include/openssl.old
-        ln -s ${prefix_path}/bin/openssl /usr/bin/openssl
-        ln -s ${prefix_path}/include/openssl/ /usr/include/openssl
+        ln -sf ${prefix_path}/bin/openssl /usr/bin/openssl
+        ln -sf ${prefix_path}/include/openssl/ /usr/include/openssl
         echo "${prefix_path}/lib/" >> /etc/ld.so.conf
         ldconfig
     fi
@@ -257,7 +257,7 @@ install_lib() {
         prefix_path=${luajit_path}
         rm $prefix_path -rf
         make PREFIX=$prefix_path && make install PREFIX=$prefix_path
-        ln -s $prefix_path/lib/libluajit-5.1.so.2 /lib64/libluajit-5.1.so.2
+        ln -sf $prefix_path/lib/libluajit-5.1.so.2 /lib64/libluajit-5.1.so.2
         install_lock
         cd ../
     fi

@@ -37,8 +37,8 @@ install_php53() {
 
         # 环境变量
         rm -f /usr/bin/php
-        ln -s ${prefix_path}/bin/php /usr/local/bin/php
-        ln -s ${prefix_path}/bin/phpize /usr/local/bin/phpize
+        ln -sf ${prefix_path}/bin/php /usr/local/bin/php
+        ln -sf ${prefix_path}/bin/phpize /usr/local/bin/phpize
 
         if [ $Mem -gt 1024 -a $Mem -le 1500 ];then
             Memory_limit=192

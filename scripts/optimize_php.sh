@@ -13,7 +13,7 @@ EOF
 
 optimize_php() {
 
-    ini_file=${php_path}/ect/php.ini
+    ini_file=${php_path}/etc/php.ini
 
     echo '开始优化php'
 

@@ -39,8 +39,8 @@ install_mysql() {
 
         # 环境变量
         rm -f /usr/bin/mysql
-        ln -s ${prefix_path}/bin/mysql /usr/local/bin/mysql
-        ln -s ${prefix_path}/bin/mysqladmin /usr/local/bin/mysqladmin
+        ln -sf ${prefix_path}/bin/mysql /usr/local/bin/mysql
+        ln -sf ${prefix_path}/bin/mysqladmin /usr/local/bin/mysqladmin
 
         mkdir -p $prefix_path/etc
         rm $prefix_path/my.cnf -f
