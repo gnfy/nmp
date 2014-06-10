@@ -3,7 +3,7 @@
 lnmp_path=/usr/local/lnmp
 
 if [ ! -d $lnmp_path ]; then
-    echo -e "\033[31m程序目录不存在,请先解压/同步代码\033[0m"
+    echo -e "\033[31m{$lnmp_path}程序目录不存在,请先解压/同步代码\033[0m"
     kill -9 $$
     exit
 fi
