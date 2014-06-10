@@ -1,0 +1,53 @@
+include memcache;
+
+location ~ \.php($|/) {
+
+    # 通过cookie来刷新缓存
+    set_by_lua $skip '
+        local args = ngx.req.get_uri_args()
+        for key, val in pairs(args) do
+            if key == "nocache" then
+                return 1
+            end
+        end 
+        if ngx.var.cookie_clean_cache == "1" then
+            return 2
+        end
+        return 0
+    ';
+
+    #set $cache_status Hit;
+    #if ($skip = 1) {
+    #    set $cache_status Pass;
+    #}
+    #add_header X-Cache $cache_status;
+    #add_header X-Skip $skip;
+    #add_header FSN $fastcgi_script_name;
+    #add_header SN $real_script_name;
+
+    # 某些脚本不缓存
+    if ($fastcgi_script_name ~* "(cookie\.php|test\.php)") {
+        set $skip 1;
+    }
+
+    srcache_fetch_skip $skip;
+    
+    # 是否缓存
+    if ($skip = 1) {
+        srcache_store_skip $skip;
+    }
+
+    set $key $uri$args;
+
+    srcache_fetch   GET /memc $key;
+    srcache_store   PUT /memc $key;
+
+    # 添加http头
+    header_filter_by_lua '
+        ngx.header["X-Cache"] = ngx.var.srcache_fetch_status
+    ';
+
+    fastcgi_pass   backend;
+    include        fastcgi_params;
+
+}

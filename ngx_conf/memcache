@@ -1,0 +1,10 @@
+location /memc {
+    internal;
+    add_header X-Cache hit;
+    memc_connect_timeout 100ms;
+    memc_send_timeout 100ms;
+    memc_read_timeout 100ms;
+    set $memc_key $query_string;
+    set $memc_exptime 300;
+    memc_pass memcache;
+}

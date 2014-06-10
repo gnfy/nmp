@@ -1,0 +1,24 @@
+[submodule "ngx_mod/lua-nginx-module"]
+	path = ngx_mod/lua-nginx-module
+	url = https://github.com/openresty/lua-nginx-module.git
+[submodule "ngx_mod/memc-nginx-module"]
+	path = ngx_mod/memc-nginx-module
+	url = https://github.com/openresty/memc-nginx-module.git
+[submodule "ngx_mod/ngx_devel_kit"]
+	path = ngx_mod/ngx_devel_kit
+	url = https://github.com/simpl/ngx_devel_kit.git
+[submodule "ngx_mod/redis2-nginx-module"]
+	path = ngx_mod/redis2-nginx-module
+	url = https://github.com/openresty/redis2-nginx-module.git
+[submodule "ngx_mod/set-misc-nginx-module"]
+	path = ngx_mod/set-misc-nginx-module
+	url = https://github.com/openresty/set-misc-nginx-module.git
+[submodule "ngx_mod/srcache-nginx-module"]
+	path = ngx_mod/srcache-nginx-module
+	url = https://github.com/openresty/srcache-nginx-module.git
+[submodule "ngx_mod/echo-nginx-module"]
+	path = ngx_mod/echo-nginx-module
+	url = https://github.com/openresty/echo-nginx-module.git
+[submodule "ngx_mod/ngx_pagespeed"]
+	path = ngx_mod/ngx_pagespeed
+	url = https://github.com/pagespeed/ngx_pagespeed.git
