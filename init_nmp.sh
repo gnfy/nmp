@@ -23,33 +23,51 @@ mysql_path=$lnmp_path/mysql
 install_log=$lnmp_path/install.log
 
 # 添加相关用户
-groupadd $web_group
-useradd -s /sbin/nologin -g $web_group $web_user
+if [ -d $php_path -o -d $nginx_path ]; then
+    groupadd $web_group
+    useradd -s /sbin/nologin -g $web_group $web_user
+fi
 
-groupadd $mysql_group
-useradd -s /sbin/nologin -g $mysql_group $mysql_user
+if [ -d $mysql_path ]; then
+    groupadd $mysql_group
+    useradd -s /sbin/nologin -g $mysql_group $mysql_user
+fi
 
-# 系统服务
-/bin/cp $php_path/init/php-fpm /etc/init.d/php-fpm -f
-/bin/cp $mysql_path/init/mysqld /etc/init.d/mysqld -f
-/bin/cp $nginx_path/init/nginx /etc/init.d/nginx -f
+# 系统服务 开机自启 环境变量
+if [ -d $php_path ]; then
+    /bin/cp $php_path/init/php-fpm /etc/init.d/php-fpm -f
+    chkconfig --level 345 php-fpm on
+    ln -sf $php_path/bin/php /usr/local/bin/php
+    ln -sf $php_path/bin/phpize /usr/local/bin/phpize
+    # 优化php
+    . $lnmp_path/scripts/optimize_php.sh
+    
+    service php-fpm start
+fi
 
-# 开机自启动
-chkconfig --level 345 php-fpm on
-chkconfig --level 345 mysqld on
-chkconfig --level 345 nginx on
+if [ -d $mysql_path ]; then
+    /bin/cp $mysql_path/init/mysqld /etc/init.d/mysqld -f
+    chkconfig --level 345 mysqld on
+    ln -sf $mysql_path/bin/mysql /usr/local/bin/mysql
+    ln -sf $mysql_path/bin/mysqladmin /usr/local/bin/mysqladmin
+    # 优化mysql
+    . $lnmp_path/scripts/optimize_mysql.sh
 
-# 环境变量
-ln -sf $php_path/bin/php /usr/local/bin/php
-ln -sf $php_path/bin/phpize /usr/local/bin/phpize
-ln -sf $mysql_path/bin/mysql /usr/local/bin/mysql
-ln -sf $mysql_path/bin/mysqladmin /usr/local/bin/mysqladmin
+    service mysqld start
+    
+    if [ -s /sbin/iptables ]; then
+        /sbin/iptables -I INPUT -p tcp --dport $mysql_port -j ACCEPT
+        /sbin/iptables-save
+    fi
+fi
 
-# lua库
-ln -sf $lnmp_path/lib/luajit/lib/libluajit-5.1.so.2 /lib64/libluajit-5.1.so.2
-
-# nginx日志分割
-cat > /etc/logrotate.d/nginx << EOF
+if [ -d $nginx_path ]; then
+    /bin/cp $nginx_path/init/nginx /etc/init.d/nginx -f
+    chkconfig --level 345 nginx on
+    # lua库
+    ln -sf $lnmp_path/lib/luajit/lib/libluajit-5.1.so.2 /lib64/libluajit-5.1.so.2
+    # 日志分割
+    cat > /etc/logrotate.d/nginx << EOF
 $nginx_path/logs/*.log {
 daily
 rotate 5
@@ -64,21 +82,14 @@ endscript
 }
 EOF
 
-# 优化php
-. $lnmp_path/scripts/optimize_php.sh
-# 优化mysql
-. $lnmp_path/scripts/optimize_mysql.sh
-# 优化nginx
-. $lnmp_path/scripts/optimize_nginx.sh
+    # 优化nginx
+    . $lnmp_path/scripts/optimize_nginx.sh
 
-# 启动
-service php-fpm start
-service mysqld start
-service nginx start
+    service nginx start
 
-# 更改防火墙
-if [ -s /sbin/iptables ]; then
-    /sbin/iptables -I INPUT -p tcp --dport 80 -j ACCEPT
-    /sbin/iptables -I INPUT -p tcp --dport $mysql_port -j ACCEPT
-    /sbin/iptables-save
+    if [ -s /sbin/iptables ]; then
+        /sbin/iptables -I INPUT -p tcp --dport 80 -j ACCEPT
+        /sbin/iptables-save
+    fi
+
 fi

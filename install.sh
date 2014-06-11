@@ -5,7 +5,7 @@
  * Description   : lnmp 安装脚本
  * Filename      : install.sh
  * Create time   : 2014-06-04 18:16:56
- * Last modified : 2014-06-09 18:34:26
+ * Last modified : 2014-06-11 23:40:47
  * License       : MIT, GPL
  * ********************************************
  */
@@ -39,6 +39,7 @@ is_install_php='y'
 is_install_nginx='y'
 is_install_mysql='y'
 is_install_git='y'
+is_install_memcache='y'
 
 read -p "是否更新系统(y/n, 默认$is_update_system)?:" is_val
 [ $is_val ] && is_update_system=$is_val
@@ -72,6 +73,12 @@ else
     [ $is_val ] && is_install_git=$is_val
 fi
 
+# 相关路径
+php_path=${install_path}/php5.3
+nginx_path=${install_path}/nginx
+mysql_path=${install_path}/mysql
+mysql_data_path=${mysql_path}/data
+
 if [ $is_install_mysql = 'y' ]; then
     read -p "请指定mysql运行用户(默认$mysql_user):" new_user
     [ $new_user ] && mysql_user=$new_user
@@ -84,13 +91,15 @@ if [ $is_install_mysql = 'y' ]; then
 
     read -p "请指定mysql root 密码(默认$mysql_pwd):" new_pwd
     [ $new_pwd ] && mysql_pwd=$new_pwd
+
+    read -p "请指定mysql数据目录(默认$mysql_data_path):" new_path
+    [ $new_path ] && mysql_data_path=$new_path
 fi
 
+read -p "是否安装memcache(y/n, 默认$is_install_memcache)?:" is_val
+[ $is_val ] && is_install_memcache=$is_val
+
 # 相关的路径
-php_path=${install_path}/php5.3
-nginx_path=${install_path}/nginx
-mysql_path=${install_path}/mysql
-mysql_data_path=${mysql_path}/data
 memcache_path=${install_path}/memcache
 install_log=${install_path}/install.log
 install_lib_path=${install_path}/lib
@@ -101,6 +110,7 @@ libiconv_path=${install_lib_path}/libiconv
 libmcrypt_path=${install_lib_path}/libmcrypt
 libpng_path=${install_lib_path}/libpng
 libxml2_path=${install_lib_path}/libxml2
+libevent_path=${install_lib_path}/libevent
 luajit_path=${install_lib_path}/luajit
 mhash_path=${install_lib_path}/mhash
 openssl_path=${install_lib_path}/openssl
@@ -111,12 +121,9 @@ zlib_path=${install_lib_path}/zlib
 zlib_src_path=${src_path}/zlib-1.2.8
 jemalloc_path=${install_lib_path}/jemalloc
 
-read -p "请指定mysql数据目录(默认$mysql_data_path):" new_path
-[ $new_path ] && mysql_data_path=$new_path
-
 # 更新系统
 if [ $is_update_system = "y" ]; then
-. ${CURDIR}/scripts/update_system.sh
+    . ${CURDIR}/scripts/update_system.sh
 fi
 
 # 工具
@@ -128,32 +135,37 @@ fi
 
 # 安装依赖包
 if [ $is_install_php = 'y' -o $is_install_nginx = 'y' -o $is_install_mysql = 'y' ]; then
-. ${CURDIR}/scripts/install_lib.sh
-# 导入相关环境变量
-export LDFLAGS="-L${zlib_path}/lib"
-export CPPFLAGS="-I${zlib_path}/include"
-export LUAJIT_LIB=${luajit_path}/lib
-export LUAJIT_INC=${luajit_path}/include/luajit-2.0
+    . ${CURDIR}/scripts/install_lib.sh
+    # 导入相关环境变量
+    export LDFLAGS="-L${zlib_path}/lib"
+    export CPPFLAGS="-I${zlib_path}/include"
+    export LUAJIT_LIB=${luajit_path}/lib
+    export LUAJIT_INC=${luajit_path}/include/luajit-2.0
 fi
 
 # 安装git
 if [ $is_install_git = 'y' ]; then
-. ${CURDIR}/scripts/install_git.sh
+    . ${CURDIR}/scripts/install_git.sh
 fi
 
 # 安装php
 if [ $is_install_php = 'y' ]; then
-. ${CURDIR}/scripts/install_php.sh
+    . ${CURDIR}/scripts/install_php.sh
 fi
 
 # 安装nginx
 if [ $is_install_nginx = 'y' ]; then
-. ${CURDIR}/scripts/install_nginx.sh
+    . ${CURDIR}/scripts/install_nginx.sh
 fi
 
 # 安装mysql
 if [ $is_install_mysql = 'y' ]; then
-. ${CURDIR}/scripts/install_mysql.sh
+    . ${CURDIR}/scripts/install_mysql.sh
+fi
+
+# 安装memcache
+if [ $is_install_memcache = 'y' ]; then
+    . ${CURDIR}/scripts/install_memcache.sh
 fi
 
 # 更新初始化脚本
