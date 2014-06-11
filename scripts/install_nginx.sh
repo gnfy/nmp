@@ -81,7 +81,7 @@ install_nginx() {
 
         # 分割日志
         cat > /etc/logrotate.d/nginx << EOF
-$prefix_path/logs/*nginx.log {
+$prefix_path/logs/*.log {
 daily
 rotate 5
 missingok

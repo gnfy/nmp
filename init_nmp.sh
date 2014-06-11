@@ -50,7 +50,7 @@ ln -sf $lnmp_path/lib/luajit/lib/libluajit-5.1.so.2 /lib64/libluajit-5.1.so.2
 
 # nginx日志分割
 cat > /etc/logrotate.d/nginx << EOF
-$nginx_path/logs/*nginx.log {
+$nginx_path/logs/*.log {
 daily
 rotate 5
 missingok
