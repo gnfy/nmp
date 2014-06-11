@@ -45,9 +45,11 @@ install_memcache() {
         prefix_path=${memcache_path}
         rm $prefix_path -rf
         cd $_src_path
-        ./configure --prefix=$prefix_path --with-libevent={$libevent_path}
+        ./configure --prefix=$prefix_path --with-libevent=${libevent_path}
         make && make install
+        install_lock "$prefix_path"
         install_lock
+        echo -e "\033[32mmemcache 安装成功!\033[0m"
     fi
     
 }
