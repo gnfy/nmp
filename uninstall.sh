@@ -42,7 +42,7 @@ uninstall() {
                         fi
 
                         # 停止服务
-                        if [ `service $init_name status | grep running | wc -l` -gt 0 ]; then
+                        if [ pidof $init_name ]; then
                             service $init_name stop
                         fi
                     fi
