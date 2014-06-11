@@ -16,6 +16,9 @@ EOF
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 export PATH
 
+# 语言环境
+export LANG=zh_CN.UTF-8
+
 Mem=`free -m | awk '/Mem:/{print $2}'`
 
 CPU_num=`cat /proc/cpuinfo | grep processor | wc -l`
