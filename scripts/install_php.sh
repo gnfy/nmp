@@ -60,13 +60,22 @@ install_php53() {
         download_file
         file_name=${file_url##*/}
         tar zxf $file_name
-        /bin/cp ZendGuardLoader-php-5.3-linux-glibc23-x86_64/php-5.3.x/ZendGuardLoader.so ${prefix_path}/lib/php/
+        # 创建扩展路径
+        extension_dir=${prefix_path}/lib/php/extensions
+        mkdir -p $extension_dir
+        /bin/cp ZendGuardLoader-php-5.3-linux-glibc23-x86_64/php-5.3.x/ZendGuardLoader.so $extension_dir
+
+        # 设置扩展路径
+        if [ -z "`cat $php_install_dir/etc/php.ini | grep '^extension_dir'`" ]; then
+            find_str=`sed -n '/extension_dir\(.*\)/p' $prefix_path/etc/php.ini | sed -n '1p'`
+            sed -i "s@$find_str@$find_str\nextension_dir = \"$prefix_path/lib/php/extensions\"@" $prefix_path/etc/php.ini 
+        fi
 
         mkdir -p ${prefix_path}/etc/php.d
 
 cat >${prefix_path}/etc/php.d/ZendGuardLoader.ini<<EOF
 [Zend Optimizer] 
-zend_extension=$prefix_path/lib/php/ZendGuardLoader.so
+zend_extension=${extension_dir}/ZendGuardLoader.so
 zend_loader.enable=1
 zend_loader.disable_licensing=0
 zend_loader.obfuscation_level_support=3

@@ -40,6 +40,7 @@ is_install_nginx='y'
 is_install_mysql='y'
 is_install_git='y'
 is_install_memcache='y'
+is_install_php_memcache='n'
 
 read -p "是否更新系统(y/n, 默认$is_update_system)?:" is_val
 [ $is_val ] && is_update_system=$is_val
@@ -98,6 +99,12 @@ fi
 
 read -p "是否安装memcache(y/n, 默认$is_install_memcache)?:" is_val
 [ $is_val ] && is_install_memcache=$is_val
+
+if [ $is_install_memcache = 'y' ]; then
+    is_install_php_memcache='y'
+    read -p "是否安装php memcache 扩展(y/n, 默认$is_install_php_memcache)?:" is_val
+    [ $is_val ] && is_install_php_memcache=$is_val
+fi
 
 # 相关的路径
 memcache_path=${install_path}/memcache

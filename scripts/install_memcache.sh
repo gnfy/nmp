@@ -51,6 +51,31 @@ install_memcache() {
         install_lock
         echo -e "\033[32mmemcache 安装成功!\033[0m"
     fi
+
+    #php memcache
+    if [ $is_install_php_memcache = 'y' ]; then
+        install_lock "$php_path"
+        _src_path=${src_path}/memcache-2.2.7
+        install_status=$(check_install)
+        if [ $install_status -eq "0" ]; then
+            file_url=http://pecl.php.net/get/memcache-2.2.7.tgz
+            download_file
+            file_name=${file_url##*/}
+            rm $_src_path -rf
+            tar zxf $file_name
+            cd $_src_path
+            phpize
+            ./configure --enable-memcache --with-php-config=$php_path/bin/php-config --with-zlib-dir=$zlib_path
+            make
+            /bin/cp modules/*.so $php_path/lib/php/extensions -f
+            cat >${php_path}/etc/php.d/memcache.ini<<EOF
+[memcache]
+extension=memcache.so
+EOF
+            service php-fpm reload
+            install_lock
+        fi
+    fi
     
 }
 
