@@ -20,7 +20,7 @@ mysql_port=3306
 php_path=$lnmp_path/php5.3
 nginx_path=$lnmp_path/nginx
 mysql_path=$lnmp_path/mysql
-mysql_data_path=$lnmp_path/mysql
+mysql_data_path=$lnmp_path/mysql/data
 install_log=$lnmp_path/install.log
 
 # 添加相关用户
