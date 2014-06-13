@@ -8,6 +8,17 @@ if [ ! -d $lnmp_path ]; then
     exit
 fi
 
+if [ -f /etc/redhat-release ];then
+    OS=CentOS
+elif [ ! -z "`cat /etc/issue | grep bian`" ];then
+    OS=Debian
+elif [ ! -z "`cat /etc/issue | grep Ubuntu`" ];then
+    OS=Ubuntu
+else
+    echo -e "\033[31m系统不支持 \033[0m"
+    kill -9 $$
+fi
+
 cd $lnmp_path
 
 web_user=www
@@ -38,7 +49,11 @@ fi
 # 系统服务 开机自启 环境变量
 if [ -d $php_path ]; then
     /bin/cp $php_path/init/php-fpm /etc/init.d/php-fpm -f
-    chkconfig --level 345 php-fpm on
+    if [ $OS = 'CentOS' ]; then
+        chkconfig --level 345 php-fpm on
+    else
+        update-rc.d php-fpm defaults
+    fi
     ln -sf $php_path/bin/php /usr/local/bin/php
     ln -sf $php_path/bin/phpize /usr/local/bin/phpize
     # 优化php
@@ -49,7 +64,11 @@ fi
 
 if [ -d $mysql_path ]; then
     /bin/cp $mysql_path/init/mysqld /etc/init.d/mysqld -f
-    chkconfig --level 345 mysqld on
+    if [ $OS = 'CentOS' ]; then
+        chkconfig --level 345 mysqld on
+    else
+        update-rc.d mysqld defaults
+    fi
     ln -sf $mysql_path/bin/mysql /usr/local/bin/mysql
     ln -sf $mysql_path/bin/mysqladmin /usr/local/bin/mysqladmin
     # 优化mysql
@@ -65,10 +84,17 @@ fi
 
 if [ -d $nginx_path ]; then
     /bin/cp $nginx_path/init/nginx /etc/init.d/nginx -f
-    chkconfig --level 345 nginx on
+    if [ $OS = 'CentOS' ]; then
+        chkconfig --level 345 nginx on
+    else
+        update-rc.d nginx defaults
+    fi
     # lua库
-    ln -sf $lnmp_path/lib/luajit/lib/libluajit-5.1.so.2 /lib64/libluajit-5.1.so.2
-    ln -sf $lnmp_path/lib/luajit/lib/libluajit-5.1.so.2 /lib/libluajit-5.1.so.2
+    if [ $OS = 'CentOS' ]; then
+        ln -sf $lnmp_path/lib/luajit/lib/libluajit-5.1.so.2 /lib64/libluajit-5.1.so.2
+    else
+        ln -sf $lnmp_path/lib/luajit/lib/libluajit-5.1.so.2 /lib/libluajit-5.1.so.2
+    fi
     # 日志分割
     cat > /etc/logrotate.d/nginx << EOF
 $nginx_path/logs/*.log {
