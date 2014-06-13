@@ -8,18 +8,11 @@ if [ ! -d $lnmp_path ]; then
     exit
 fi
 
-if [ -f /etc/redhat-release ];then
-    OS=CentOS
-elif [ ! -z "`cat /etc/issue | grep bian`" ];then
-    OS=Debian
-elif [ ! -z "`cat /etc/issue | grep Ubuntu`" ];then
-    OS=Ubuntu
-else
-    echo -e "\033[31m系统不支持 \033[0m"
-    kill -9 $$
-fi
 
 cd $lnmp_path
+
+# 监测操作系统
+. $lnmp_path/scripts/check_os.sh
 
 web_user=www
 web_group=www
