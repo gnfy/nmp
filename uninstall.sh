@@ -24,6 +24,10 @@ nginx=/etc/init.d/nginx:/usr/local/lnmp/nginx:/etc/logrotate.d/nginx
 mysql=/etc/init.d/mysqld:/usr/local/lnmp/mysql:/usr/local/bin/mysql:/usr/local/bin/mysqladmin
 progrom_arr=(php nginx mysql)
 
+lnmp_path=/usr/local/lnmp
+
+. ${lnmp_path}/script/check_os.sh
+
 uninstall() {
 
     if [  ${#uninstall_progrom[@]} -gt 0 ]; then
@@ -37,8 +41,12 @@ uninstall() {
 
                     if [ -e "$i" ]; then
                         # 取消开机自启动
-                        if [ `chkconfig --list | grep $init_name | wc -l` -gt 0 ]; then
-                            chkconfig --del $init_name
+                        if [ $OS = 'CentOS' ]; then
+                            if [ `chkconfig --list | grep $init_name | wc -l` -gt 0 ]; then
+                                chkconfig --del $init_name
+                            fi
+                        else
+                            update-rc.d -f $init_name remove
                         fi
 
                         # 停止服务
