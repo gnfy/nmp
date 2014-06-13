@@ -36,6 +36,8 @@ update_init() {
         sed -i "s@^mysql_group=.*@mysql_group=$mysql_group@" ${CURDIR}/init_nmp.sh
         # mysql端口
         sed -i "s@^mysql_port=.*@mysql_port=$mysql_port@" ${CURDIR}/init_nmp.sh
+        # mysql数据目录
+        sed -i "s@^mysql_data_path=.*@mysql_data_path=$mysql_data_path@" ${CURDIR}/init_nmp.sh
 
         /bin/cp ${CURDIR}/scripts/optimize_mysql.sh $install_path/scripts/ -f
     fi

@@ -20,6 +20,7 @@ mysql_port=3306
 php_path=$lnmp_path/php5.3
 nginx_path=$lnmp_path/nginx
 mysql_path=$lnmp_path/mysql
+mysql_data_path=$lnmp_path/mysql
 install_log=$lnmp_path/install.log
 
 # 添加相关用户
@@ -31,6 +32,7 @@ fi
 if [ -d $mysql_path ]; then
     groupadd $mysql_group
     useradd -s /sbin/nologin -g $mysql_group $mysql_user
+    chown $mysql_user.$mysql_group -R $mysql_data_path
 fi
 
 # 系统服务 开机自启 环境变量
@@ -66,6 +68,7 @@ if [ -d $nginx_path ]; then
     chkconfig --level 345 nginx on
     # lua库
     ln -sf $lnmp_path/lib/luajit/lib/libluajit-5.1.so.2 /lib64/libluajit-5.1.so.2
+    ln -sf $lnmp_path/lib/luajit/lib/libluajit-5.1.so.2 /lib/libluajit-5.1.so.2
     # 日志分割
     cat > /etc/logrotate.d/nginx << EOF
 $nginx_path/logs/*.log {
