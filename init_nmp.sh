@@ -83,10 +83,11 @@ if [ -d $mysql_path ]; then
 fi
 
 if [ -d $nginx_path ]; then
-    /bin/cp $nginx_path/init/nginx /etc/init.d/nginx -f
     if [ $OS = 'CentOS' ]; then
+        /bin/cp $nginx_path/init/nginx /etc/init.d/nginx -f
         chkconfig --level 345 nginx on
     else
+        /bin/cp $nginx_path/init/nginx_ubuntu /etc/init.d/nginx -f
         update-rc.d nginx defaults
     fi
     # lua库
