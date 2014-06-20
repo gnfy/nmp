@@ -45,7 +45,7 @@ update_init() {
     # 添加初始化和卸载程序
     /bin/cp ${CURDIR}/init_nmp.sh $install_path -f
     /bin/cp ${CURDIR}/uninstall.sh $install_path -f
-    /bin/cp ${CURDIR}/check_os.sh $install_path -f
+    /bin/cp ${CURDIR}/scripts/check_os.sh $install_path/scripts -f
 
 }
 

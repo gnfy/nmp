@@ -5,7 +5,7 @@
  * Description   : lnmp 安装脚本
  * Filename      : install.sh
  * Create time   : 2014-06-04 18:16:56
- * Last modified : 2014-06-11 23:40:47
+ * Last modified : 2014-06-20 19:01:59
  * License       : MIT, GPL
  * ********************************************
  */
@@ -37,10 +37,12 @@ mysql_pwd=root
 is_update_system='n'
 is_install_php='y'
 is_install_nginx='y'
+is_add_nginx_module='y'
 is_install_mysql='y'
 is_install_git='y'
 is_install_memcache='y'
-is_install_php_memcache='n'
+is_install_php_memcache='y'
+no_mod=''
 
 read -p "是否更新系统(y/n, 默认$is_update_system)?:" is_val
 [ $is_val ] && is_update_system=$is_val
@@ -52,6 +54,12 @@ read -p "请指定源码存放路径(默认$src_path):" new_path
 read -p "请指定安装路径(默认$install_path):" new_path
 [ $new_path ] && install_path=$new_path
 [ ! -d $install_path ] && mkdir -p $install_path
+
+# 相关路径
+php_path=${install_path}/php5.3
+nginx_path=${install_path}/nginx
+mysql_path=${install_path}/mysql
+mysql_data_path=${mysql_path}/data
 
 read -p "是否安装php(y/n, 默认$is_install_php)?:" is_val
 [ $is_val ] && is_install_php=$is_val
@@ -69,16 +77,28 @@ if [ $is_install_nginx = 'y' ]; then
     read -p "请指定web运行用户组(默认$web_group):" new_group
     [ $new_group ] && web_group=$new_group
     is_install_git='y'
+    is_add_nginx_module='y'
 else
+    is_add_nginx_module='n'
     read -p "是否安装git(y/n, 默认$is_install_git)?:" is_val
     [ $is_val ] && is_install_git=$is_val
+    if [ -d $nginx_path ]; then
+        read -p "是否添加nginx module(y/n, 默认$is_add_nginx_module)?:" is_val
+        [ $is_val ] && is_add_nginx_module=$is_val
+    fi
 fi
 
-# 相关路径
-php_path=${install_path}/php5.3
-nginx_path=${install_path}/nginx
-mysql_path=${install_path}/mysql
-mysql_data_path=${mysql_path}/data
+if [ $is_add_nginx_module = 'y' ]; then
+    echo
+    echo "################################"
+    echo '系统已有的nginx模块如下:'
+    ls $CURDIR/ngx_mod | tr " " "\n"
+    echo "如果需要添加模块可以使用.gitmodules方式也可以将准备好的模块复制到$CURDIR/ngx_mod目录下"
+    echo "################################"
+    echo
+    read -p '请输入不需要安装的模块,多个模块用|分割：' is_val
+    [ $is_val ] && no_mod=$is_val
+fi
 
 if [ $is_install_mysql = 'y' ]; then
     read -p "请指定mysql运行用户(默认$mysql_user):" new_user
@@ -162,8 +182,10 @@ fi
 
 # 安装nginx
 if [ $is_install_nginx = 'y' ]; then
-    . ${CURDIR}/scripts/install_nginx.sh
+. ${CURDIR}/scripts/install_nginx.sh
 fi
+
+exit
 
 # 安装mysql
 if [ $is_install_mysql = 'y' ]; then

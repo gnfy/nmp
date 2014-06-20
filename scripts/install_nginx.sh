@@ -5,7 +5,7 @@
  * Description   : nginx安装脚本
  * Filename      : install_nginx.sh
  * Create time   : 2014-06-04 18:43:25
- * Last modified : 2014-06-05 09:24:17
+ * Last modified : 2014-06-20 19:02:03
  * License       : MIT, GPL
  * ********************************************
  */
@@ -25,26 +25,14 @@ install_nginx() {
         tar zxf $file_name
         prefix_path=${nginx_path}
         rm $prefix_path -rf
-        mod_path=${install_path}/nginx_modules
-        mkdir -p $mod_path
-        cd $CURDIR
-        # nginx 相关模块
-        # 更新模块
-        git submodule init
-        git submodule update
-        git submodule status
-        /bin/cp ${CURDIR}/ngx_mod/* $mod_path/ -rf
-        cd $_src_path
-        add_mod=`find $mod_path/* -maxdepth 0 -type d | sed 's/^/--add-module=/g' | tr "\n" ' '`
-        if [ -d $mod_path/ngx_pagespeed ]; then
-            cd $mod_path/ngx_pagespeed
-            file_url=https://dl.google.com/dl/page-speed/psol/1.8.31.3.tar.gz
-            download_file
-            file_name=${file_url##*/}
-            rm psol -rf
-            tar zxf $file_name
+
+        add_mod=''
+        # 添加模块
+        if [ $is_add_nginx_module = 'y' ] ; then
+            add_nginx_module
             cd $_src_path
         fi
+
         ./configure --prefix=$prefix_path --user=$web_user --group=$web_group --with-http_stub_status_module --with-http_ssl_module --with-http_flv_module --with-http_gzip_static_module --with-pcre=$pcre_src_path --with-zlib=$zlib_src_path --with-openssl=$openssl_src_path $add_mod
 
         make 
@@ -118,4 +106,36 @@ EOF
     
 }
 
-install_nginx 2>&1 | tee -a $install_log
+# 添加nginx模块
+add_nginx_module() {
+    mod_path=${install_path}/nginx_modules
+    rm $mod_path -rf
+    mkdir -p $mod_path
+    cd $CURDIR
+    no_mod_arr=`echo $no_mod | sed 's/|/ /g'`
+    for i in $no_mod_arr; do
+        if [ $i ] ; then
+            git rm --cached ngx_mod/$i
+        fi
+    done
+    # nginx 相关模块
+    # 更新模块
+    git submodule init
+    git submodule update
+    git submodule status
+    #/bin/cp ${CURDIR}/ngx_mod/* $mod_path/ -rf
+    ls ${CURDIR}/ngx_mod/ | grep -Ev "$no_mod" | xargs -i /bin/cp ${CURDIR}/ngx_mod/{} $mod_path/{} -rf
+    add_mod=`find $mod_path/* -maxdepth 0 -type d | sed 's/^/--add-module=/g' | tr "\n" ' '`
+    if [ -d $mod_path/ngx_pagespeed ]; then
+        cd $mod_path/ngx_pagespeed
+        file_url=https://dl.google.com/dl/page-speed/psol/1.8.31.3.tar.gz
+        download_file
+        file_name=${file_url##*/}
+        rm psol -rf
+        tar zxf $file_name
+    fi
+}
+
+if [ $is_install_nginx = 'y' ]; then
+    install_nginx 2>&1 | tee -a $install_log
+fi

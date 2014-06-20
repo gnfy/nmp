@@ -22,3 +22,9 @@
 [submodule "ngx_mod/ngx_pagespeed"]
 	path = ngx_mod/ngx_pagespeed
 	url = https://github.com/pagespeed/ngx_pagespeed.git
+[submodule "ngx_mod/drizzle-nginx-module"]
+	path = ngx_mod/drizzle-nginx-module
+	url = https://github.com/openresty/drizzle-nginx-module.git
+[submodule "ngx_mod/mod_zip"]
+	path = ngx_mod/mod_zip
+	url = https://github.com/evanmiller/mod_zip.git
