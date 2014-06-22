@@ -185,8 +185,6 @@ if [ $is_install_nginx = 'y' ]; then
 . ${CURDIR}/scripts/install_nginx.sh
 fi
 
-exit
-
 # 安装mysql
 if [ $is_install_mysql = 'y' ]; then
     . ${CURDIR}/scripts/install_mysql.sh
