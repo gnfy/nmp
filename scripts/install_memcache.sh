@@ -31,6 +31,7 @@ install_memcache() {
         make
         make install
         install_lock
+        cd ../
     fi
 
     # memcache
@@ -50,6 +51,7 @@ install_memcache() {
         install_lock "$prefix_path"
         install_lock
         echo -e "\033[32mmemcache 安装成功!\033[0m"
+        cd ../
     fi
 
     #php memcache
@@ -74,6 +76,7 @@ extension=memcache.so
 EOF
             service php-fpm reload
             install_lock
+            cd ../
         fi
     fi
     
