@@ -184,7 +184,7 @@ install_lib() {
     _src_path=$openssl_src_path
     install_status=$(check_install)
     if [ $install_status -eq "0" ]; then
-        file_url=http://www.openssl.org/source/openssl-1.0.1g.tar.gz
+        file_url=http://www.openssl.org/source/openssl-1.0.1h.tar.gz
         download_file
         file_name=${file_url##*/}
         rm $_src_path -rf
