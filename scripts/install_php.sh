@@ -116,6 +116,7 @@ EOF
         # 优化php
         . ${CURDIR}/scripts/optimize_php.sh
 
+        rm /etc/init.d/php-fpm -f
         /bin/cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm -f
         chmod u+x /etc/init.d/php-fpm
 

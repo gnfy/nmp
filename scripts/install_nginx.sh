@@ -50,6 +50,7 @@ install_nginx() {
 
         sed -i "s@^user.*@user $web_user;@" $_src_path/conf/nginx.conf
 
+        rm /etc/init.d/nginx -f
         /bin/cp ${CURDIR}/init/nginx /etc/init.d/nginx -f
         sed -i "s@/usr/local/lnmp/nginx@$prefix_path@g" /etc/init.d/nginx
         chmod u+x /etc/init.d/nginx

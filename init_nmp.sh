@@ -41,6 +41,7 @@ fi
 
 # 系统服务 开机自启 环境变量
 if [ -d $php_path ]; then
+    rm /etc/init.d/php-fpm -f
     /bin/cp $php_path/init/php-fpm /etc/init.d/php-fpm -f
     if [ $OS = 'CentOS' ]; then
         chkconfig --level 345 php-fpm on
@@ -56,6 +57,7 @@ if [ -d $php_path ]; then
 fi
 
 if [ -d $mysql_path ]; then
+    rm /etc/init.d/mysqld -f
     /bin/cp $mysql_path/init/mysqld /etc/init.d/mysqld -f
     if [ $OS = 'CentOS' ]; then
         chkconfig --level 345 mysqld on
@@ -76,6 +78,7 @@ if [ -d $mysql_path ]; then
 fi
 
 if [ -d $nginx_path ]; then
+    rm /etc/init.d/nginx -f
     if [ $OS = 'CentOS' ]; then
         /bin/cp $nginx_path/init/nginx /etc/init.d/nginx -f
         chkconfig --level 345 nginx on

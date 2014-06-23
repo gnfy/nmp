@@ -144,6 +144,7 @@ EOF
         chown ${mysql_user}.${mysql_group} -R $mysql_data_path
         
         # init文件
+        rm /etc/init.d/mysqld -f
         /bin/cp support-files/mysql.server /etc/init.d/mysqld
         chmod +x /etc/init.d/mysqld
         mkdir -p $prefix_path/init

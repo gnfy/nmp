@@ -5,7 +5,7 @@
  * Description   : 更新初始化脚本
  * Filename      : update_init.sh
  * Create time   : 2014-06-04 18:43:25
- * Last modified : 2014-06-10 13:05:02
+ * Last modified : 2014-06-23 10:14:37
  * License       : MIT, GPL
  * ********************************************
  */
@@ -18,20 +18,20 @@ update_init() {
     mkdir -p $install_path/scripts
 
     # web用户
-    if [ $is_install_php = 'y' -o $is_install_nginx = 'y' ]; then
+    if [ -d $php_path -o -d $nginx_path ]; then
         sed -i "s@^web_user=.*@web_user=$web_user@" ${CURDIR}/init_nmp.sh
         sed -i "s@^web_group=.*@web_group=$web_group@" ${CURDIR}/init_nmp.sh
 
-        if [ $is_install_php = 'y' ]; then
+        if [ -d $php_path ]; then
             /bin/cp ${CURDIR}/scripts/optimize_php.sh $install_path/scripts/ -f
         fi
 
-        if [ $is_install_nginx = 'y' ]; then
+        if [ -d $nginx_path ]; then
             /bin/cp ${CURDIR}/scripts/optimize_nginx.sh $install_path/scripts/ -f
         fi
     fi
     # mysql用户
-    if [ $is_install_mysql = 'y' ]; then
+    if [ -d $mysql_path ]; then
         sed -i "s@^mysql_user=.*@mysql_user=$mysql_user@" ${CURDIR}/init_nmp.sh
         sed -i "s@^mysql_group=.*@mysql_group=$mysql_group@" ${CURDIR}/init_nmp.sh
         # mysql端口
