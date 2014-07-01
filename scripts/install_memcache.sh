@@ -50,6 +50,19 @@ install_memcache() {
         make && make install
         install_lock "$prefix_path"
         install_lock
+
+        rm /etc/init.d/memcache -f
+        /bin/cp ${CURDIR}/init/memcache /etc/init.d/memcache -f
+        sed -i "s@/usr/local/lnmp/memcache@$prefix_path@g" /etc/init.d/memcache
+        chmod u+x /etc/init.d/memcache
+
+        # 开机自启动
+        chkconfig --level 345 memcache on
+
+        # 将init脚本复制到安装目录下
+        mkdir -p $prefix_path/init
+        /bin/cp /etc/init.d/memcache $prefix_path/init/ -f
+
         echo -e "\033[32mmemcache 安装成功!\033[0m"
         cd ../
     fi

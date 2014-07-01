@@ -24,6 +24,7 @@ mysql_port=3306
 php_path=$lnmp_path/php5.3
 nginx_path=$lnmp_path/nginx
 mysql_path=$lnmp_path/mysql
+memcache_path=$lnmp_path/memcache
 mysql_data_path=$lnmp_path/mysql/data
 install_log=$lnmp_path/install.log
 
@@ -118,4 +119,14 @@ EOF
         /sbin/iptables-save
     fi
 
+fi
+
+if [ -d $memcache_path ]; then
+    rm /etc/init.d/memcache -f
+    /bin/cp $memcache_path/init/memcache /etc/init.d/memcache -f
+    if [ $OS = 'CentOS' ]; then
+        chkconfig --level 345 memcache on
+    else
+        update-rc.d memcache defaults
+    fi
 fi

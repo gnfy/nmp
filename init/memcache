@@ -1,0 +1,156 @@
+#! /bin/sh
+:<<EOF
+/**
+ * ********************************************
+ * Description   : memcache init 脚本
+ * Filename      : memcache
+ * Create time   : 2014-07-01 12:06:44
+ * Last modified : 2014-07-01 12:06:44
+ * License       : MIT, GPL
+ * ********************************************
+ */
+EOF
+
+prefix=/usr/local/lnmp/memcache
+
+bin_file=${prefix}/bin/memcached
+port=11211
+user=root
+mem_size=256
+max_connect=1024
+pid_file=/tmp/memcached.pid
+
+wait_for_pid () {
+	try=0
+
+	while test $try -lt 35 ; do
+
+		case "$1" in
+			'created')
+			if [ -f "$2" ] ; then
+				try=''
+				break
+			fi
+			;;
+
+			'removed')
+			if [ ! -f "$2" ] ; then
+				try=''
+				break
+			fi
+			;;
+		esac
+
+		echo -n .
+		try=`expr $try + 1`
+		sleep 1
+
+	done
+
+}
+
+case "$1" in
+	start)
+		echo -n "Starting memcache "
+
+        $bin_file -d -m $mem_size -u $user -p $port -c $max_connect -P $pid_file
+
+		if [ "$?" != 0 ] ; then
+			echo " failed"
+			exit 1
+		fi
+
+		wait_for_pid created $pid_file
+
+		if [ -n "$try" ] ; then
+			echo " failed"
+			exit 1
+		else
+			echo " done"
+		fi
+	;;
+
+	stop)
+		echo -n "Shutting down memcache "
+
+		if [ ! -r $pid_file ] ; then
+			echo "warning, no pid file found - $pid_file is not running ?"
+			exit 1
+		fi
+
+		kill -QUIT `cat $pid_file`
+
+        rm $pid_file
+
+		wait_for_pid removed $pid_file
+        
+		if [ -n "$try" ] ; then
+			echo " failed. Use force-quit"
+			exit 1
+		else
+			echo " done"
+		fi
+	;;
+
+	force-quit)
+		echo -n "Terminating memcache "
+
+		if [ ! -r $pid_file ] ; then
+			echo "warning, no pid file found - memcache is not running ?"
+			exit 1
+		fi
+
+		kill -TERM `cat $pid_file`
+
+		wait_for_pid removed $pid_file
+
+		if [ -n "$try" ] ; then
+			echo " failed"
+			exit 1
+		else
+			echo " done"
+		fi
+	;;
+
+    status)
+        isRunning=0
+        if [ -s $pid_file ] ; then
+            read pid < "$pid_file"
+            if kill -0 $pid 2>/dev/null ; then
+                isRunning=1
+            fi
+        fi
+
+        if [ $isRunning -eq 1 ] ; then
+            echo "memcache running ($pid)"
+        else
+            echo 'memcache is close'
+        fi
+
+    ;;
+
+	restart)
+		$0 stop
+		$0 start
+	;;
+
+	reload)
+
+		echo -n "Reload service $pid_file "
+
+		if [ ! -r $pid_file ] ; then
+			echo "warning, no pid file found - memcache is not running ?"
+			exit 1
+		fi
+
+		kill -USR2 `cat $pid_file`
+
+		echo " done"
+	;;
+
+	*)
+		echo "Usage: $0 {start|stop|force-quit|restart|status|reload}"
+		exit 1
+	;;
+
+esac

@@ -5,7 +5,7 @@
  * Description   : 更新初始化脚本
  * Filename      : update_init.sh
  * Create time   : 2014-06-04 18:43:25
- * Last modified : 2014-06-23 10:14:37
+ * Last modified : 2014-07-01 12:57:57
  * License       : MIT, GPL
  * ********************************************
  */
@@ -30,6 +30,7 @@ update_init() {
             /bin/cp ${CURDIR}/scripts/optimize_nginx.sh $install_path/scripts/ -f
         fi
     fi
+
     # mysql用户
     if [ -d $mysql_path ]; then
         sed -i "s@^mysql_user=.*@mysql_user=$mysql_user@" ${CURDIR}/init_nmp.sh
@@ -40,6 +41,11 @@ update_init() {
         sed -i "s@^mysql_data_path=.*@mysql_data_path=$mysql_data_path@" ${CURDIR}/init_nmp.sh
 
         /bin/cp ${CURDIR}/scripts/optimize_mysql.sh $install_path/scripts/ -f
+    fi
+
+    # memcache
+    if [ -d $memcache_path ]; then
+        # to do memcache
     fi
     
     # 添加初始化和卸载程序
