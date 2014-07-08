@@ -42,6 +42,7 @@ is_install_mysql='y'
 is_install_git='y'
 is_install_memcache='y'
 is_install_php_memcache='y'
+is_install_ftp='y'
 no_mod=''
 
 read -p "是否更新系统(y/n, 默认$is_update_system)?:" is_val
@@ -60,6 +61,7 @@ php_path=${install_path}/php5.3
 nginx_path=${install_path}/nginx
 mysql_path=${install_path}/mysql
 mysql_data_path=${mysql_path}/data
+ftp_path=${install_path}/pureftpd
 
 read -p "是否安装php(y/n, 默认$is_install_php)?:" is_val
 [ $is_val ] && is_install_php=$is_val
@@ -125,6 +127,9 @@ if [ $is_install_memcache = 'y' ]; then
     read -p "是否安装php memcache 扩展(y/n, 默认$is_install_php_memcache)?:" is_val
     [ $is_val ] && is_install_php_memcache=$is_val
 fi
+
+read -p "是否安装ftp(y/n, 默认$is_install_ftp)?:" is_val
+[ $is_val ] && is_install_ftp=$is_val
 
 # 相关的路径
 memcache_path=${install_path}/memcache
@@ -193,6 +198,11 @@ fi
 # 安装memcache
 if [ $is_install_memcache = 'y' ]; then
     . ${CURDIR}/scripts/install_memcache.sh
+fi
+
+# 安装ftp
+if [ $is_install_ftp = 'y' ]; then
+    . ${CURDIR}/scripts/install_ftp.sh
 fi
 
 # 更新初始化脚本

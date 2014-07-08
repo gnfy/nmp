@@ -25,7 +25,7 @@ user_add() {
 
         has_user=`cat /etc/passwd | awk -F : '{print $1}' | grep $_user`
 
-        [ -z "$has_user" ] && useradd -s /sbin/nologin -g $_group $_user
+        [ -z "$has_user" ] && useradd -s /sbin/nologin -d /dev/null -g $_group $_user
 
     fi
 }

@@ -21,22 +21,26 @@ mysql_user=mysql
 mysql_group=mysql
 mysql_port=3306
 
+ftp_user=ftpuser
+ftp_group=ftpuser
+
 php_path=$lnmp_path/php5.3
 nginx_path=$lnmp_path/nginx
 mysql_path=$lnmp_path/mysql
 memcache_path=$lnmp_path/memcache
 mysql_data_path=$lnmp_path/mysql/data
+ftp_path=$lnmp_path/pureftpd
 install_log=$lnmp_path/install.log
 
 # 添加相关用户
 if [ -d $php_path -o -d $nginx_path ]; then
     groupadd $web_group
-    useradd -s /sbin/nologin -g $web_group $web_user
+    useradd -s /sbin/nologin -d /dev/null -g $web_group $web_user
 fi
 
 if [ -d $mysql_path ]; then
     groupadd $mysql_group
-    useradd -s /sbin/nologin -g $mysql_group $mysql_user
+    useradd -s /sbin/nologin -d /dev/null -g $mysql_group $mysql_user
     chown $mysql_user.$mysql_group -R $mysql_data_path
 fi
 
@@ -121,6 +125,7 @@ EOF
 
 fi
 
+# memcache
 if [ -d $memcache_path ]; then
     rm /etc/init.d/memcache -f
     /bin/cp $memcache_path/init/memcache /etc/init.d/memcache -f
@@ -129,4 +134,34 @@ if [ -d $memcache_path ]; then
     else
         update-rc.d memcache defaults
     fi
+    service memcache start
+fi
+
+# ftp
+if [ -d $ftp_path ]; then
+
+    groupadd $ftp_group
+    useradd -s /sbin/nologin -d /dev/null -g $ftp_group $ftp_user
+
+    # 开启启动
+    rm /etc/init.d/pureftpd -f
+    /bin/cp $ftp_path/init/pureftpd /etc/init.d/pureftpd -f
+    if [ $OS = 'CentOS' ]; then
+        chkconfig --level 345 pureftpd on
+    else
+        update-rc.d pureftpd defaults
+    fi
+
+    # 环境变量
+    ln -sf $ftp_path/bin/pure-pw  /usr/local/bin/pure-pw
+
+    # 防火墙
+    if [ -s /sbin/iptables ]; then
+        iptables -I INPUT 5 -p tcp -m state --state NEW -m tcp --dport 21 -j ACCEPT
+        iptables -I INPUT 6 -p tcp -m state --state NEW -m tcp --dport 20000:30000 -j ACCEPT
+        service iptables save
+    fi
+
+    service pureftpd start
+
 fi

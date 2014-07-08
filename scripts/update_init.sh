@@ -44,9 +44,14 @@ update_init() {
     fi
 
     # memcache
-    if [ -d $memcache_path ]; then
+    #if [ -d $memcache_path ]; then
         # to do memcache
-    fi
+    #fi
+
+    # ftp
+    #if [ -d $ftp_path ]; then
+        # to do ftp
+    #fi
     
     # 添加初始化和卸载程序
     /bin/cp ${CURDIR}/init_nmp.sh $install_path -f
