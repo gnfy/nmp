@@ -42,6 +42,9 @@ optimize_nginx() {
                 sed -i 's@^worker_cpu_affinity.*@worker_cpu_affinity 10000000 01000000 00100000 00010000 00001000 00000100 00000010 00000001;@' $conf_file
             fi
         fi
+        [ -z $limit_num ] && limit_num=`ulimit -n`
+        sed -i "s@^worker_rlimit_nofile.*@worker_rlimit_nofile $limit_num;@" $conf_file
+        sed -i "s@worker_connections.*@worker_connections $limit_num;@" $conf_file
     else
         echo -e "\033[31m${conf_file} 不存在,请确保nginx已成功安装 \033[0m"
     fi
