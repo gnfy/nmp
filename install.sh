@@ -5,7 +5,7 @@
  * Description   : lnmp 安装脚本
  * Filename      : install.sh
  * Create time   : 2014-06-04 18:16:56
- * Last modified : 2014-06-20 19:01:59
+ * Last modified : 2014-07-16 23:33:26
  * License       : MIT, GPL
  * ********************************************
  */
@@ -42,6 +42,7 @@ is_install_mysql='y'
 is_install_git='y'
 is_install_memcache='y'
 is_install_php_memcache='y'
+is_install_php_accelerate=0
 is_install_ftp='y'
 no_mod=''
 
@@ -65,6 +66,12 @@ ftp_path=${install_path}/pureftpd
 
 read -p "是否安装php(y/n, 默认$is_install_php)?:" is_val
 [ $is_val ] && is_install_php=$is_val
+echo '选择安装PHP加速'
+echo -e "\t0. 不安装加速"
+echo -e "\t1. apcu"
+echo -e "\t2. eaccelerator"
+read -p "是否安装php加速(请输入序号, 默认$is_install_php_accelerate)?:" is_val
+[ $is_val ] && is_install_php_accelerate=$is_val
 
 read -p "是否安装nginx(y/n, 默认$is_install_nginx)?:" is_val
 [ $is_val ] && is_install_nginx=$is_val
@@ -203,6 +210,11 @@ fi
 # 安装ftp
 if [ $is_install_ftp = 'y' ]; then
     . ${CURDIR}/scripts/install_ftp.sh
+fi
+
+# 安装 php 加速
+if [ $is_install_php_accelerate -gt 0 ]; then
+    . ${CURDIR}/scripts/install_php_accelerate.sh
 fi
 
 # 更新初始化脚本
