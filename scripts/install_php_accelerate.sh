@@ -3,9 +3,9 @@
 /**
  * ********************************************
  * Description   : apcu php 扩展安装脚本
- * Filename      : install_apcu.sh
+ * Filename      : install_php_accelerate.sh
  * Create time   : 2014-06-04 18:43:25
- * Last modified : 2014-07-16 22:50:29
+ * Last modified : 2014-07-17 22:07:14
  * License       : MIT, GPL
  * ********************************************
  */
@@ -19,9 +19,10 @@ install_php_accelerate() {
 
     if [ $is_install_php_accelerate -eq 1 ];then
         install_php_apcu
-    fi
-    if [ $is_install_php_accelerate -eq 2 ];then
+    elif [ $is_install_php_accelerate -eq 2 ];then
         install_php_eaccelerator
+    elif [ $is_install_php_accelerate -eq 3 ];then
+        install_php_opcache
     fi
 
     service php-fpm reload
@@ -91,6 +92,36 @@ eaccelerator.compress_level="9"
 eaccelerator.keys = "disk_only"
 eaccelerator.sessions = "disk_only"
 eaccelerator.content = "disk_only"
+EOF
+        install_lock
+        cd ../
+    fi
+}
+
+#zend opcache
+install_php_opcache() {
+    _src_path=${src_path}/zendopcache-7.0.3
+    install_status=$(check_install)
+    if [ $install_status -eq "0" ]; then
+        file_url=http://pecl.php.net/get/zendopcache-7.0.3.tgz
+        download_file
+        file_name=${file_url##*/}
+        rm $_src_path -rf
+        tar zxf $file_name
+        cd $_src_path
+        phpize
+        ./configure --with-php-config=$php_path/bin/php-config
+        make
+        /bin/cp modules/*.so $php_path/lib/php/extensions -f
+        cat >${php_path}/etc/php.d/opcache.ini<<EOF
+[opcache]
+zend_extension="$php_path/lib/php/extensions/opcache.so"
+opcache.memory_consumption=128
+opcache.interned_strings_buffer=8
+opcache.max_accelerated_files=4000
+opcache.revalidate_freq=60
+opcache.fast_shutdown=1
+opcache.enable_cli=1
 EOF
         install_lock
         cd ../

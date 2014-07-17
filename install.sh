@@ -5,7 +5,7 @@
  * Description   : lnmp 安装脚本
  * Filename      : install.sh
  * Create time   : 2014-06-04 18:16:56
- * Last modified : 2014-07-16 23:33:26
+ * Last modified : 2014-07-17 22:07:05
  * License       : MIT, GPL
  * ********************************************
  */
@@ -70,6 +70,7 @@ echo '选择安装PHP加速'
 echo -e "\t0. 不安装加速"
 echo -e "\t1. apcu"
 echo -e "\t2. eaccelerator"
+echo -e "\t3. opcache"
 read -p "是否安装php加速(请输入序号, 默认$is_install_php_accelerate)?:" is_val
 [ $is_val ] && is_install_php_accelerate=$is_val
 
