@@ -218,7 +218,7 @@ install_lib() {
         cd $_src_path
         prefix_path=${curl_path}
         rm $prefix_path -rf
-        ./configure --prefix=$prefix_path
+        ./configure --prefix=$prefix_path --with-ssl=$openssl_path
         make && make install
         install_lock
         cd ../
