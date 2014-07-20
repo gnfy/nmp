@@ -5,7 +5,7 @@
  * Description   : lnmp 安装脚本
  * Filename      : install.sh
  * Create time   : 2014-06-04 18:16:56
- * Last modified : 2014-07-17 22:07:05
+ * Last modified : 2014-07-20 15:02:26
  * License       : MIT, GPL
  * ********************************************
  */
@@ -44,6 +44,7 @@ is_install_memcache='y'
 is_install_php_memcache='y'
 is_install_php_accelerate=0
 is_install_ftp='y'
+is_install_ruby='y'
 no_mod=''
 
 read -p "是否更新系统(y/n, 默认$is_update_system)?:" is_val
@@ -59,10 +60,12 @@ read -p "请指定安装路径(默认$install_path):" new_path
 
 # 相关路径
 php_path=${install_path}/php5.3
+ruby_path=${install_path}/ruby
 nginx_path=${install_path}/nginx
 mysql_path=${install_path}/mysql
 mysql_data_path=${mysql_path}/data
 ftp_path=${install_path}/pureftpd
+yaml_path=${install_path}/yaml
 
 read -p "是否安装php(y/n, 默认$is_install_php)?:" is_val
 [ $is_val ] && is_install_php=$is_val
@@ -73,6 +76,9 @@ echo -e "\t2. eaccelerator"
 echo -e "\t3. opcache"
 read -p "是否安装php加速(请输入序号, 默认$is_install_php_accelerate)?:" is_val
 [ $is_val ] && is_install_php_accelerate=$is_val
+
+read -p "是否安装ruby(y/n, 默认$is_install_ruby)?:" is_val
+[ $is_val ] && is_install_ruby=$is_val
 
 read -p "是否安装nginx(y/n, 默认$is_install_nginx)?:" is_val
 [ $is_val ] && is_install_nginx=$is_val
@@ -191,6 +197,11 @@ fi
 # 安装php
 if [ $is_install_php = 'y' ]; then
     . ${CURDIR}/scripts/install_php.sh
+fi
+
+# 安装ruby
+if [ $is_install_ruby = 'y' ]; then
+    . ${CURDIR}/scripts/install_ruby.sh
 fi
 
 # 安装nginx
