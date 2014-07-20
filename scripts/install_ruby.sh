@@ -48,7 +48,7 @@ install_ruby() {
         prefix_path=${ruby_path}
         rm $prefix_path -rf
         cd $_src_path
-        ./configure --prefix=${prefix_path} --with-zlib=$zlib_path --with-ssl=$openssl_path --with-curl=$curl_path
+        ./configure --prefix=${prefix_path}
         make && make install
 
         install_lock "$prefix_path"
