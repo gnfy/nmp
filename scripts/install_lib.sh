@@ -81,10 +81,10 @@ install_lib() {
 
     #libpng
     install_lib_process
-    _src_path=${src_path}'/libpng-1.6.10'
+    _src_path=${src_path}'/libpng-1.6.16'
     install_status=$(check_install)
     if [ $install_status -eq "0" ]; then
-        file_url=http://ncu.dl.sourceforge.net/project/libpng/libpng16/1.6.10/libpng-1.6.10.tar.gz
+        file_url=http://ncu.dl.sourceforge.net/project/libpng/libpng16/1.6.16/libpng-1.6.16.tar.gz
         download_file
         file_name=${file_url##*/}
         rm $_src_path -rf
@@ -162,10 +162,10 @@ install_lib() {
 
     #libxml2
     install_lib_process
-    _src_path=${src_path}'/libxml2-2.9.1'
+    _src_path=${src_path}'/libxml2-2.9.2'
     install_status=$(check_install)
     if [ $install_status -eq "0" ]; then
-        file_url=ftp://xmlsoft.org/libxml2/libxml2-2.9.1.tar.gz
+        file_url=ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz
         download_file
         file_name=${file_url##*/}
         rm $_src_path -rf

@@ -26,7 +26,7 @@ install_php53() {
         prefix_path=${php_path}
         rm $prefix_path -rf
         cd $_src_path
-        ./configure --prefix=${prefix_path} --with-config-file-path=${prefix_path}/etc --with-config-file-scan-dir=${prefix_path}/etc/php.d --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-gd --with-jpeg-dir=${jpeg_path} --with-iconv-dir=${libiconv_path} --with-zlib-dir=${zlib_path} --with-png-dir=${libpng_path} --with-curl=${curl_path} --with-libxml-dir=${libxml2_path} --with-openssl-dir=${openssl_path} --with-mhash=${mhash_path} --with-mcrypt=${libmcrypt_path} --with-freetype-dir=${freetype_path} --enable-shared --enable-bcmath --enable-shmop --enable-sysvsem --enable-inline-optimization --enable-mbregex --enable-fpm --enable-mbstring=all --enable-gd-native-ttf --enable-pcntl --enable-sockets --enable-zip --enable-soap --with-gettext --enable-exif
+        ./configure --prefix=${prefix_path} --with-config-file-path=${prefix_path}/etc --with-config-file-scan-dir=${prefix_path}/etc/php.d --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-gd --with-jpeg-dir=${jpeg_path} --with-iconv-dir=${libiconv_path} --with-zlib-dir=${zlib_path} --with-png-dir=${libpng_path} --with-curl=${curl_path} --with-libxml-dir=${libxml2_path} --with-openssl-dir=${openssl_path} --with-mhash=${mhash_path} --with-mcrypt=${libmcrypt_path} --with-freetype-dir=${freetype_path} --enable-shared --enable-bcmath --enable-shmop --enable-sysvsem --enable-inline-optimization --enable-mbregex --enable-fpm --enable-mbstring=all --enable-gd-native-ttf --enable-pcntl --enable-sockets --enable-zip --enable-soap --with-gettext --enable-exif --enable-ftp
         make && make install
 
         install_lock "$prefix_path"

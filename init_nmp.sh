@@ -28,9 +28,13 @@ php_path=$lnmp_path/php5.3
 nginx_path=$lnmp_path/nginx
 mysql_path=$lnmp_path/mysql
 memcache_path=$lnmp_path/memcache
-mysql_data_path=$lnmp_path/mysql/data
+mysql_data_path=/usr/local/lnmp/mysql/data
 ftp_path=$lnmp_path/pureftpd
 install_log=$lnmp_path/install.log
+
+# 类库复制
+/bin/cp /usr/local/lnmp/lib/openssl/lib/libssl.so.1.0.0 /lib64/ -rf
+/bin/cp /usr/local/lnmp/lib/openssl/lib/libcrypto.so.1.0.0 /lib64/ -rf
 
 # 添加相关用户
 if [ -d $php_path -o -d $nginx_path ]; then
@@ -41,6 +45,8 @@ fi
 if [ -d $mysql_path ]; then
     groupadd $mysql_group
     useradd -s /sbin/nologin -d /dev/null -g $mysql_group $mysql_user
+    mkdir -p $mysql_data_path
+    /bin/cp $mysql_path/data/* $mysql_data_path/* -rf
     chown $mysql_user.$mysql_group -R $mysql_data_path
 fi
 

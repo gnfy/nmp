@@ -15,10 +15,10 @@ install_nginx() {
 
     cd $src_path
 
-    _src_path=${src_path}/nginx-1.6.0
+    _src_path=${src_path}/nginx-1.6.2
     install_status=$(check_install)
     if [ $install_status -eq "0" ]; then
-        file_url=http://nginx.org/download/nginx-1.6.0.tar.gz
+        file_url=http://nginx.org/download/nginx-1.6.2.tar.gz
         download_file
         file_name=${file_url##*/}
         rm $_src_path -rf
